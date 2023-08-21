@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>카테고리별 기술 목록보기</h1>
+    <hr>
+    <select id="category" onclick="onCategoryChange">
+    </select>
+    <select id="tech">
+    </select>
+
+    <script>
+        // category 통신
+        // fetch Category
+        async function fetchCategory(){
+            // - 다운로드
+            let response = await fetch("/api/category");
+            let body = await response.json();
+
+            // - dom제어
+            let categoryEl = document.querySelector("#category");
+            for(c of body){
+                // body를 for문을 돌면서 c에 넣는다.
+                let optionEl = document.createElement("option");
+                // option이라는 엘리먼트를 만든다.
+                optionEl.value = c.id;
+                // c의 id를 optionEl의 옵션 선택지로 넣는다.
+                optionEl.innerHTML = c.name;
+                // c의 name을 optionEl의 선택지 명으로 넣는다.
+                categoryEl.append(optionEl);
+                // id가 category인 select에 optionEl을 넣는다.
+            }
+        }
+        
+        // tech 통신
+        // fetch tech
+        async function fetchTech(){
+            // - 다운로드
+            let response = await fetch("/api/tech?categoryId=" + categoryId);
+            let body = await response.json();
+
+            // - 옵션초기화
+            // category마다 다른 tech를 호출하기 위해서
+            // 초기화하지 않으면, category가 달라질 때, 기존의 tech에 추가 된다.
+            let techEl = document.querySelector("#tech");
+            techEl.innerHTML = "";
+
+            // - dom제어
+            for(t of body){
+                let optionEl = document.createElement("option");
+                option.value = t.id;
+                option.innerHTML = t.name;
+                techEl.append(optionEl);
+            }
+        }
+
+        // category 변경을 위해 클릭 시
+        async function onCategoryChange(){
+            let categoryEl = document.querySelector("#category");
+            // category에 변화가 생길 때
+            let selectedCategoryId = categoryEl.value;
+            // 선택된 category의 value=id을 가져온다.
+            fetchTech(selectedCategoryId);
+            // fetchTech 함수는 selectedCategoryId를 기준으로 데이터를 보여준다.
+        }
+
+        // 화면초기화
+        // 제일 첫 화면이 tech id =1, 그에 따른 category이다.
+        fetchCategory();
+        fetchTech(1);
+        
+
+
+    </script>
+</body>
+
+</html>
